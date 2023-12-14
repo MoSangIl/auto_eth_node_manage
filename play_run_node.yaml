@@ -47,6 +47,7 @@
     - name: install prysm if not installed
       ansible.builtin.script: ./consensus/install_prysm.sh
       args:
+        chdir: "{{ base_path }}/consensus"
         creates: "{{ base_path }}/consensus/prysm.sh"
     - name: create new jwt if not created
       ansible.builtin.script: ./consensus/create_new_jwt.sh
