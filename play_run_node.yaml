@@ -1,0 +1,80 @@
+- name: Install go-ethereum
+  hosts: ethereum
+  tasks:
+    - name: add ethereum repostiroy into sources list
+      ansible.builtin.apt_repository:
+        repo: ppa:ethereum/ethereum
+    - name: run apt update
+      ansible.builtin.apt:
+        update_cache: yes
+    - name: install ethereum
+      ansible.builtin.apt:
+        name: ethereum
+
+- name: Make a New Account and Manage with Clef
+  hosts: ethereum
+  tasks:
+    - name: create a folder for managing clef
+      ansible.builtin.file:
+        path: "{{ base_path }}/clef/keystore"
+        state: directory
+    - name: create new Account
+      ansible.builtin.copy:
+        src: ./clef/UTC--2023-12-13T10-39-28.112715056Z--7b502e95ee90b9375eb65742a80f7c3310f43ed1
+        dest: "{{ base_path }}/clef/keystore"
+        owner: root
+        group: root
+        mode: "0600"
+    - name: install nohup
+      ansible.builtin.apt:
+        name: coreutils
+    - name: run clef node
+      ansible.builtin.script: ./clef/start_clef.sh
+      args:
+        chdir: "{{ base_path }}/clef"
+        executable: /bin/bash
+
+- name: Make Consensus Node JWT if not exist
+  hosts: ethereum
+  tasks:
+    - name: create a folder for managing prysm
+      ansible.builtin.file:
+        path: "{{ base_path }}/consensus"
+        state: directory
+    - name: install curl
+      ansible.builtin.apt:
+        name: curl
+    - name: install prysm if not installed
+      ansible.builtin.script: ./consensus/install_prysm.sh
+      args:
+        creates: "{{ base_path }}/consensus/prysm.sh"
+    - name: create new jwt if not created
+      ansible.builtin.script: ./consensus/create_new_jwt.sh
+      args:
+        chdir: "{{ base_path }}/consensus"
+        creates: "{{ base_path }}/consensus/jwt.hex"
+
+- name: Make Toml Geth Config File
+  hosts: ethereum
+  tasks:
+    - name: create a folder for managing geth
+      ansible.builtin.file:
+        path: "{{ base_path }}/geth"
+        state: directory
+    - name: run create toml geth config File
+      ansible.builtin.script: ./geth/ready_geth.sh
+      args:
+        chdir: "{{ base_path }}/geth"
+
+- name: Run execution and consensus nodes (geth and prysm)
+  hosts: ethereum
+  tasks:
+    - name: run geth
+      ansible.builtin.script: ./geth/start_geth.sh
+      args:
+        chdir: "{{ base_path }}/geth"
+        creates: "{{ base_path }}/geth/geth.ipc"
+    - name: run prysm
+      ansible.builtin.script: ./consensus/run_consensus.sh
+      args:
+        chdir: "{{ base_path }}/consensus"

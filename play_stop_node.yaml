@@ -1,0 +1,15 @@
+- name: stop all nodes (geth, prysm, clef)
+  hosts: ethereum
+  tasks:
+    - name: stop geth
+      ansible.builtin.script: ./stop.sh
+      args:
+        chdir: "{{ base_path }}/geth"
+    - name: stop prysm
+      ansible.builtin.script: ./stop.sh
+      args:
+        chdir: "{{ base_path }}/consensus"
+    - name: stop clef
+      ansible.builtin.script: ./stop.sh
+      args:
+        chdir: "{{ base_path }}/clef"
