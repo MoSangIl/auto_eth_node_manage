@@ -1,0 +1,6 @@
+- name: install nohup
+  ansible.builtin.apt:
+    name: coreutils
+- name: install curl
+  ansible.builtin.apt:
+    name: curl

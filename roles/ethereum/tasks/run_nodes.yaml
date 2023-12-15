@@ -1,0 +1,9 @@
+- name: run geth
+  ansible.builtin.script: ./geth/start_geth.sh
+  args:
+    chdir: "{{ base_path }}/geth"
+    creates: "{{ base_path }}/geth/geth.ipc"
+- name: run prysm
+  ansible.builtin.script: ./consensus/run_consensus.sh
+  args:
+    chdir: "{{ base_path }}/consensus"

@@ -1,0 +1,15 @@
+- name: create a folder for managing clef
+  ansible.builtin.file:
+    path: "{{ base_path }}/clef/keystore"
+    state: directory
+- name: create new Account
+  ansible.builtin.copy:
+    src: ./clef/UTC--2023-12-13T10-39-28.112715056Z--7b502e95ee90b9375eb65742a80f7c3310f43ed1
+    dest: "{{ base_path }}/clef/keystore"
+    owner: root
+    group: root
+    mode: "0600"
+- name: run clef node
+  ansible.builtin.script: ./clef/start_clef.sh
+  args:
+    chdir: "{{ base_path }}/clef"

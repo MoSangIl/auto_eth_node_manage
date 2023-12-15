@@ -1,0 +1,14 @@
+- name: Install go-ethereum
+  import_tasks: install_geth.yaml
+
+- name: Make a New Account and Manage with Clef
+  import_tasks: init_clef.yaml
+
+- name: Make Consensus Node JWT if not exist
+  import_tasks: init_prysm.yaml
+
+- name: Make Toml Geth Config File
+  import_tasks: init_geth.yaml
+
+- name: Run clef and execution and consensus nodes (geth and prysm)
+  import_tasks: run_nodes.yaml

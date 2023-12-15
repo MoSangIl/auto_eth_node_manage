@@ -1,0 +1,5 @@
+- name: run ethereum client nodes!
+  hosts: ethereum
+  roles:
+    - common
+    - ethereum

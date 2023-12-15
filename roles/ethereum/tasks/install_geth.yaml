@@ -1,0 +1,9 @@
+- name: add ethereum repostiroy into sources list
+  ansible.builtin.apt_repository:
+    repo: ppa:ethereum/ethereum
+- name: run apt update
+  ansible.builtin.apt:
+    update_cache: yes
+- name: install ethereum
+  ansible.builtin.apt:
+    name: ethereum

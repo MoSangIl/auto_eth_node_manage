@@ -1,0 +1,8 @@
+- name: create a folder for managing geth
+  ansible.builtin.file:
+    path: "{{ base_path }}/geth"
+    state: directory
+- name: run create toml geth config File
+  ansible.builtin.script: ./geth/ready_geth.sh
+  args:
+    chdir: "{{ base_path }}/geth"
